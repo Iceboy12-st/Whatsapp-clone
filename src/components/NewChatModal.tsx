@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Search, X, MessageCircle, Loader2 } from 'lucide-react'
+import { Search, X, MessageCircle, Loader as Loader2 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/context/AuthContext'
 import { getDisplayName } from '@/lib/utils'

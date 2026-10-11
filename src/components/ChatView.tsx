@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Send, Smile, Paperclip, ArrowLeft, MoreVertical, Trash2, Check, CheckCheck } from 'lucide-react'
+import { Send, Smile, Paperclip, ArrowLeft, MoveVertical as MoreVertical, Trash2, Check, CheckCheck } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useMessages } from '@/hooks/useMessages'
 import { useConversations } from '@/hooks/useConversations'

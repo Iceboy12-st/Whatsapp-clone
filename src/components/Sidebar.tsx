@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, MoreVertical, MessageSquarePlus, LogOut, Settings, X } from 'lucide-react'
+import { Search, MoveVertical as MoreVertical, MessageSquarePlus, LogOut, Settings, X } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useConversations } from '@/hooks/useConversations'
 import type { ConversationWithDetails } from '@/types'

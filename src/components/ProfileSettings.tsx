@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Camera, Check, Loader2 } from 'lucide-react'
+import { X, Camera, Check, Loader as Loader2 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { supabase } from '@/lib/supabase'
 import { getDisplayName } from '@/lib/utils'

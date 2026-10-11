@@ -6,7 +6,7 @@ import ChatView from '@/components/ChatView'
 import EmptyState from '@/components/EmptyState'
 import NewChatModal from '@/components/NewChatModal'
 import ProfileSettings from '@/components/ProfileSettings'
-import { Loader2 } from 'lucide-react'
+import { Loader as Loader2 } from 'lucide-react'
 
 export default function App() {
   const { user, loading } = useAuth()
