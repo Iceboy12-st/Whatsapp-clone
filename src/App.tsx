@@ -1,67 +1,54 @@
-import { useState } from 'react'
+import { MessageCircle } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
-import AuthScreen from '@/components/AuthScreen'
-import Sidebar from '@/components/Sidebar'
-import ChatView from '@/components/ChatView'
-import EmptyState from '@/components/EmptyState'
-import NewChatModal from '@/components/NewChatModal'
-import ProfileSettings from '@/components/ProfileSettings'
-import { Loader as Loader2 } from 'lucide-react'
+import { isSupabaseConfigured } from '@/lib/supabase'
+import { useApplyTheme } from '@/hooks/useTheme'
+import { AuthScreen } from '@/components/auth/AuthScreen'
+import { ProfileSetup } from '@/components/auth/ProfileSetup'
+import { Shell } from '@/components/shell/Shell'
+import { Toaster } from '@/components/ui/Toaster'
+
+function Splash() {
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-8 bg-panel">
+      <MessageCircle className="h-16 w-16 text-ink-3" aria-hidden />
+      <div className="h-[3px] w-[320px] overflow-hidden rounded bg-line">
+        <div className="h-full w-1/3 animate-[slideLeft_1.2s_ease-in-out_infinite_alternate] bg-accent" />
+      </div>
+      <p className="text-ink">WhatsApp</p>
+    </div>
+  )
+}
+
+function MissingConfig() {
+  return (
+    <div className="flex h-full items-center justify-center bg-app p-6">
+      <div className="max-w-md rounded-lg bg-panel p-8 shadow-menu">
+        <h1 className="text-xl font-medium text-ink">Supabase is not configured</h1>
+        <p className="mt-3 text-sm leading-relaxed text-ink-2">
+          Set <code className="rounded bg-field px-1">VITE_SUPABASE_URL</code> and{' '}
+          <code className="rounded bg-field px-1">VITE_SUPABASE_ANON_KEY</code> in your environment, then restart the dev server. See README.md for setup steps.
+        </p>
+      </div>
+    </div>
+  )
+}
 
 export default function App() {
-  const { user, loading } = useAuth()
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
-  const [showNewChat, setShowNewChat] = useState(false)
-  const [showSettings, setShowSettings] = useState(false)
+  useApplyTheme()
+  const { session, profile, loading } = useAuth()
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-wa-bg-panel">
-        <Loader2 className="w-8 h-8 text-wa-green animate-spin" />
-      </div>
-    )
-  }
-
-  if (!user) {
-    return <AuthScreen />
-  }
+  let screen: React.ReactNode
+  if (!isSupabaseConfigured) screen = <MissingConfig />
+  else if (loading) screen = <Splash />
+  else if (!session) screen = <AuthScreen />
+  else if (!profile) screen = <Splash />
+  else if (!profile.onboarded) screen = <ProfileSetup />
+  else screen = <Shell me={profile} />
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Sidebar - hidden on mobile when a conversation is selected */}
-      <div className={selectedConversation ? 'hidden md:flex' : 'flex'}>
-        <Sidebar
-          selectedId={selectedConversation}
-          onSelect={setSelectedConversation}
-          onNewChat={() => setShowNewChat(true)}
-          onOpenSettings={() => setShowSettings(true)}
-        />
-      </div>
-
-      {/* Chat area */}
-      <div className={selectedConversation ? 'flex flex-1' : 'hidden md:flex flex-1'}>
-        {selectedConversation ? (
-          <ChatView
-            conversationId={selectedConversation}
-            onBack={() => setSelectedConversation(null)}
-          />
-        ) : (
-          <EmptyState />
-        )}
-      </div>
-
-      {/* Modals */}
-      {showNewChat && (
-        <NewChatModal
-          onClose={() => setShowNewChat(false)}
-          onConversationCreated={(id) => {
-            setSelectedConversation(id)
-            setShowNewChat(false)
-          }}
-        />
-      )}
-
-      {showSettings && <ProfileSettings onClose={() => setShowSettings(false)} />}
-    </div>
+    <>
+      {screen}
+      <Toaster />
+    </>
   )
 }
